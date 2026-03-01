@@ -1,8 +1,8 @@
 'use client';
 import { useState, useRef, useEffect, useCallback } from 'react';
 
-/* ─── Quiz Data ─── */
-const SAMPLE_STARTERS = [
+/* ─── Starters by Gender ─── */
+const STARTERS_FEMALE = [
   { icon: '💫', text: "He hasn't texted back in 2 days... what do I do?" },
   { icon: '🔍', text: 'Analyze my situation for red & green flags' },
   { icon: '✨', text: 'How do I become more magnetic and alluring?' },
@@ -11,6 +11,16 @@ const SAMPLE_STARTERS = [
   { icon: '🔥', text: 'How do I reignite the spark in my relationship?' },
 ];
 
+const STARTERS_MALE = [
+  { icon: '💬', text: "She's gone cold after a great first date — what happened?" },
+  { icon: '🔍', text: 'Analyze my situation for red & green flags' },
+  { icon: '🧲', text: 'What do women actually find attractive?' },
+  { icon: '💔', text: 'I keep getting friendzoned — what am I doing wrong?' },
+  { icon: '🪞', text: "I want to be more confident around women" },
+  { icon: '🔥', text: 'How do I deepen the connection with my partner?' },
+];
+
+/* ─── Quiz Data ─── */
 const ENERGY_QUIZ = [
   { q: 'At a social gathering, you naturally tend to...', opts: [
     { text: 'Make everyone feel welcome and included', arch: 'warm' },
@@ -58,10 +68,10 @@ const ARCHETYPE_DATA = {
 };
 
 const ALLURE_QUIZ = [
-  { q: "When he doesn't text back for hours, your first instinct is...", opts: [
+  { q: "When they don't text back for hours, your first instinct is...", opts: [
     { text: 'Send another message to check in', score: 2 },
-    { text: "Assume he's busy and focus on your own day", score: 5 },
-    { text: 'Check his social media for clues', score: 1 },
+    { text: "Assume they're busy and focus on your own day", score: 5 },
+    { text: 'Check their social media for clues', score: 1 },
     { text: 'Feel annoyed but keep yourself distracted', score: 3 },
   ]},
   { q: 'Someone crosses a boundary. You typically...', opts: [
@@ -97,10 +107,10 @@ const ALLURE_QUIZ = [
 ];
 
 const getScoreResult = (pct) => {
-  if (pct >= 80) return { level: 'Magnetic', color: '#8B6BAE', desc: "You've cracked the code, gorgeous. Your Invisible Thread is strong — you radiate confidence, boundaries, and presence. Keep refining. Mastery is a practice, not a destination." };
+  if (pct >= 80) return { level: 'Magnetic', color: '#8B6BAE', desc: "You've cracked the code. Your Invisible Thread is strong — you radiate confidence, boundaries, and presence. Keep refining. Mastery is a practice, not a destination." };
   if (pct >= 60) return { level: 'Rising', color: '#E8A838', desc: "You're awakening to your power. The foundations are there — confidence, some boundaries, growing self-worth. Your next level is mastering consistency. The Allure Code's 21-Day Reset would accelerate your transformation." };
   if (pct >= 40) return { level: 'Awakening', color: '#E8919A', desc: "You're becoming aware of the patterns that dim your glow. That awareness is everything — it's where transformation begins. Focus on the High-Value Mindset and the Confidence Paradox." };
-  return { level: 'Chrysalis', color: '#6B7DB3', desc: "You're in a cocoon right now, love — and that's not a bad thing. Something beautiful is forming. Old patterns are ready to be shed. The Allure Code was written for exactly this moment in your journey." };
+  return { level: 'Chrysalis', color: '#6B7DB3', desc: "You're in a cocoon right now — and that's not a bad thing. Something beautiful is forming. Old patterns are ready to be shed. The Allure Code was written for exactly this moment in your journey." };
 };
 
 /* ─── Components ─── */
@@ -136,8 +146,32 @@ const Bubble = ({ msg }) => {
   );
 };
 
+/* ─── Gender Selector ─── */
+const GenderSelector = ({ onSelect }) => (
+  <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 24, animation: 'fadeIn 0.6s ease-out' }}>
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 20 }}><VCIcon size={80} fontSize={30} rounded /></div>
+    <h1 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 32, fontWeight: 600, color: '#2D1B33', marginBottom: 6, textAlign: 'center' }}>VenusCoach</h1>
+    <p style={{ fontSize: 14, color: '#9B8BA5', marginBottom: 6, textAlign: 'center' }}>by Elina Allegroni · The Allure Code</p>
+    <p style={{ fontSize: 15, color: '#5A4D63', marginBottom: 36, textAlign: 'center', maxWidth: 340, lineHeight: 1.6 }}>AI-powered relationship coaching rooted in attraction psychology</p>
+    <p style={{ fontSize: 16, fontFamily: "'Cormorant Garamond', serif", fontWeight: 600, color: '#2D1B33', marginBottom: 20 }}>I&apos;m here as...</p>
+    <div style={{ display: 'flex', gap: 16, maxWidth: 400, width: '100%' }}>
+      {[{ g: 'female', icon: '♀', label: 'A Woman', desc: 'Unlock your feminine allure & magnetic energy' }, { g: 'male', icon: '♂', label: 'A Man', desc: 'Learn what women actually notice & value' }].map(o => (
+        <button key={o.g} onClick={() => onSelect(o.g)} style={{ flex: 1, padding: '28px 16px', border: '2px solid rgba(107,79,122,0.12)', borderRadius: 24, background: '#FFF', cursor: 'pointer', transition: 'all 0.3s', fontFamily: 'inherit', textAlign: 'center', boxShadow: '0 4px 20px rgba(107,79,122,0.06)' }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#8B6BAE'; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(107,79,122,0.12)'; }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(107,79,122,0.12)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(107,79,122,0.06)'; }}>
+          <div style={{ fontSize: 40, marginBottom: 12 }}>{o.icon}</div>
+          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 20, fontWeight: 600, color: '#2D1B33', marginBottom: 4 }}>{o.label}</div>
+          <div style={{ fontSize: 12.5, color: '#9B8BA5', lineHeight: 1.4 }}>{o.desc}</div>
+        </button>
+      ))}
+    </div>
+    <p style={{ fontSize: 11, color: '#B5A8BF', marginTop: 24 }}>AI coach · not a substitute for therapy</p>
+  </div>
+);
+
 /* ─── Main App ─── */
 export default function VenusCoachApp() {
+  const [gender, setGender] = useState(null);
   const [tab, setTab] = useState('coach');
   const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState('');
@@ -154,6 +188,12 @@ export default function VenusCoachApp() {
   const scroll = useCallback(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }), []);
   useEffect(() => { scroll(); }, [msgs, loading, scroll]);
 
+  const starters = gender === 'male' ? STARTERS_MALE : STARTERS_FEMALE;
+  const welcomeGreeting = gender === 'male' ? 'Hey there' : 'Hey gorgeous';
+  const welcomeText = gender === 'male'
+    ? "I\u2019m Venus, your AI relationship coach powered by The Allure Code. Let\u2019s talk about what\u2019s really going on."
+    : "I\u2019m Venus, your AI relationship coach powered by The Allure Code. Tell me what\u2019s on your heart.";
+
   const send = async (text) => {
     if (!text.trim() || loading) return;
     const userMsg = { role: 'user', content: text.trim() };
@@ -166,48 +206,30 @@ export default function VenusCoachApp() {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: newMsgs.map(m => ({ role: m.role, content: m.content })) }),
+        body: JSON.stringify({ messages: newMsgs.map(m => ({ role: m.role, content: m.content })), gender }),
       });
       const data = await res.json();
-      const reply = data.content?.[0]?.text || "I'm here for you, love. Tell me a little more about what's going on.";
+      const fallback = gender === 'male' ? "I\u2019m here for you. Tell me a little more about what\u2019s going on." : "I\u2019m here for you, love. Tell me a little more about what\u2019s going on.";
+      const reply = data.content?.[0]?.text || fallback;
       setMsgs(prev => [...prev, { role: 'assistant', content: reply }]);
     } catch {
-      setMsgs(prev => [...prev, { role: 'assistant', content: "Something flickered on my end — try again in a moment, gorgeous. I'm not going anywhere. ♀" }]);
+      setMsgs(prev => [...prev, { role: 'assistant', content: "Something flickered on my end \u2014 try again in a moment. I\u2019m not going anywhere. \u2640" }]);
     }
     setLoading(false);
   };
 
-  const handleEQuiz = (arch) => {
-    const newTally = { ...eTally, [arch]: (eTally[arch] || 0) + 1 };
-    setETally(newTally);
-    if (eStep < ENERGY_QUIZ.length - 1) { setEStep(eStep + 1); }
-    else { setEResult(Object.entries(newTally).sort((a, b) => b[1] - a[1])[0][0]); }
-  };
+  const handleEQuiz = (arch) => { const n = { ...eTally, [arch]: (eTally[arch] || 0) + 1 }; setETally(n); if (eStep < ENERGY_QUIZ.length - 1) setEStep(eStep + 1); else setEResult(Object.entries(n).sort((a, b) => b[1] - a[1])[0][0]); };
+  const handleAQuiz = (score) => { const n = [...aScores, score]; setAScores(n); if (aStep < ALLURE_QUIZ.length - 1) setAStep(aStep + 1); else setAResult(Math.round((n.reduce((a, b) => a + b, 0) / (ALLURE_QUIZ.length * 5)) * 100)); };
 
-  const handleAQuiz = (score) => {
-    const newScores = [...aScores, score];
-    setAScores(newScores);
-    if (aStep < ALLURE_QUIZ.length - 1) { setAStep(aStep + 1); }
-    else { setAResult(Math.round((newScores.reduce((a, b) => a + b, 0) / (ALLURE_QUIZ.length * 5)) * 100)); }
-  };
+  if (!gender) return <GenderSelector onSelect={setGender} />;
 
-  const tabStyle = (id) => ({
-    flex: 1, padding: '9px 4px', border: 'none', borderRadius: 10,
-    background: tab === id ? '#FFF' : 'transparent',
-    color: tab === id ? '#2D1B33' : '#9B8BA5',
-    fontSize: 12.5, fontWeight: tab === id ? 600 : 400,
-    cursor: 'pointer', transition: 'all 0.25s',
-    boxShadow: tab === id ? '0 2px 10px rgba(107,79,122,0.08)' : 'none',
-    fontFamily: 'inherit', letterSpacing: '0.01em',
-  });
-
+  const tabStyle = (id) => ({ flex: 1, padding: '9px 4px', border: 'none', borderRadius: 10, background: tab === id ? '#FFF' : 'transparent', color: tab === id ? '#2D1B33' : '#9B8BA5', fontSize: 12.5, fontWeight: tab === id ? 600 : 400, cursor: 'pointer', transition: 'all 0.25s', boxShadow: tab === id ? '0 2px 10px rgba(107,79,122,0.08)' : 'none', fontFamily: 'inherit', letterSpacing: '0.01em' });
   const quizOptStyle = { padding: '13px 16px', border: '1.5px solid rgba(107,79,122,0.1)', borderRadius: 14, background: '#FFF', cursor: 'pointer', fontSize: 13.5, color: '#2D1B33', textAlign: 'left', transition: 'all 0.2s', fontFamily: 'inherit', lineHeight: 1.4, width: '100%' };
   const ctaStyle = { width: '100%', padding: '14px', border: 'none', borderRadius: 14, background: 'linear-gradient(135deg, #6B4F7A, #8B6BAE)', color: '#FFF', fontSize: 14.5, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit', boxShadow: '0 4px 16px rgba(107,79,122,0.2)', letterSpacing: '0.02em' };
   const retakeStyle = { padding: '14px 18px', border: '1.5px solid rgba(107,79,122,0.12)', borderRadius: 14, background: '#FFF', color: '#6B4F7A', fontSize: 13.5, fontWeight: 500, cursor: 'pointer', fontFamily: 'inherit' };
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
       <div style={{ padding: '14px 16px 10px', background: 'rgba(255,255,255,0.75)', backdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(107,79,122,0.06)', position: 'sticky', top: 0, zIndex: 10 }}>
         <div style={{ maxWidth: 520, margin: '0 auto' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
@@ -216,38 +238,30 @@ export default function VenusCoachApp() {
               <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 22, fontWeight: 600, color: '#2D1B33', letterSpacing: '-0.3px' }}>VenusCoach</div>
               <div style={{ fontSize: 11.5, color: '#9B8BA5', fontWeight: 400, letterSpacing: '0.02em' }}>by Elina Allegroni · The Allure Code</div>
             </div>
-            <div style={{ marginLeft: 'auto', fontSize: 10, background: 'linear-gradient(135deg, #6B4F7A, #8B6BAE)', color: '#FFF', padding: '4px 10px', borderRadius: 20, fontWeight: 600, letterSpacing: '0.05em' }}>BETA</div>
+            <div style={{ marginLeft: 'auto', display: 'flex', gap: 6, alignItems: 'center' }}>
+              <button onClick={() => { setGender(null); setMsgs([]); setShowWelcome(true); setTab('coach'); setEStep(0); setETally({}); setEResult(null); setAStep(0); setAScores([]); setAResult(null); }} style={{ fontSize: 10, background: 'rgba(107,79,122,0.06)', color: '#9B8BA5', padding: '4px 10px', borderRadius: 20, fontWeight: 500, border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>{gender === 'female' ? '♀' : '♂'} Switch</button>
+              <div style={{ fontSize: 10, background: 'linear-gradient(135deg, #6B4F7A, #8B6BAE)', color: '#FFF', padding: '4px 10px', borderRadius: 20, fontWeight: 600, letterSpacing: '0.05em' }}>BETA</div>
+            </div>
           </div>
           <div style={{ display: 'flex', gap: 3, background: 'rgba(107,79,122,0.05)', borderRadius: 12, padding: 3 }}>
-            {[{ id: 'coach', label: 'Coach', icon: '💬' }, { id: 'analyze', label: 'Analyze', icon: '🔍' }, { id: 'energy', label: 'Energy Type', icon: '⚡' }, { id: 'score', label: 'Allure Score', icon: '✨' }].map(t =>
-              <button key={t.id} onClick={() => setTab(t.id)} style={tabStyle(t.id)}>{t.icon} {t.label}</button>
-            )}
+            {[{ id: 'coach', label: 'Coach', icon: '💬' }, { id: 'analyze', label: 'Analyze', icon: '🔍' }, { id: 'energy', label: 'Energy Type', icon: '⚡' }, { id: 'score', label: 'Allure Score', icon: '✨' }].map(t => <button key={t.id} onClick={() => setTab(t.id)} style={tabStyle(t.id)}>{t.icon} {t.label}</button>)}
           </div>
         </div>
       </div>
 
-      {/* Content */}
       <div style={{ flex: 1, maxWidth: 520, margin: '0 auto', width: '100%', display: 'flex', flexDirection: 'column' }}>
-
-        {/* COACH TAB */}
         {tab === 'coach' && <>
           <div style={{ flex: 1, padding: '14px 16px 0', overflowY: 'auto' }}>
             {showWelcome && msgs.length === 0 && (
               <div style={{ animation: 'fadeIn 0.5s ease-out', paddingTop: 16 }}>
                 <div style={{ textAlign: 'center', marginBottom: 28 }}>
                   <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 14 }}><VCIcon size={72} fontSize={26} rounded /></div>
-                  <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 600, color: '#2D1B33', marginBottom: 6 }}>Hey gorgeous</h2>
-                  <p style={{ fontSize: 14, color: '#7A6B85', lineHeight: 1.6, maxWidth: 320, margin: '0 auto' }}>
-                    I&apos;m Venus, your AI relationship coach powered by <em style={{ fontFamily: "'Cormorant Garamond', serif" }}>The Allure Code</em>. Tell me what&apos;s on your heart.
-                  </p>
+                  <h2 style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 24, fontWeight: 600, color: '#2D1B33', marginBottom: 6 }}>{welcomeGreeting}</h2>
+                  <p style={{ fontSize: 14, color: '#7A6B85', lineHeight: 1.6, maxWidth: 320, margin: '0 auto' }}>{welcomeText}</p>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-                  {SAMPLE_STARTERS.map((s, i) => (
-                    <button key={i} onClick={() => send(s.text)} style={{
-                      background: '#FFF', border: '1.5px solid rgba(107,79,122,0.1)', borderRadius: 16, padding: '14px 12px',
-                      cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s', fontFamily: 'inherit',
-                      animation: `fadeIn 0.4s ease-out ${0.05 + i * 0.06}s both`,
-                    }}>
+                  {starters.map((s, i) => (
+                    <button key={i} onClick={() => send(s.text)} style={{ background: '#FFF', border: '1.5px solid rgba(107,79,122,0.1)', borderRadius: 16, padding: '14px 12px', cursor: 'pointer', textAlign: 'left', transition: 'all 0.2s', fontFamily: 'inherit', animation: `fadeIn 0.4s ease-out ${0.05 + i * 0.06}s both` }}>
                       <div style={{ fontSize: 20, marginBottom: 6 }}>{s.icon}</div>
                       <div style={{ fontSize: 13, color: '#2D1B33', lineHeight: 1.4 }}>{s.text}</div>
                     </button>
@@ -261,41 +275,27 @@ export default function VenusCoachApp() {
           </div>
           <div style={{ padding: '10px 16px 18px' }}>
             <div style={{ display: 'flex', gap: 8, background: '#FFF', borderRadius: 22, padding: '5px 5px 5px 18px', border: '1.5px solid rgba(107,79,122,0.1)', boxShadow: '0 2px 16px rgba(107,79,122,0.05)' }}>
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send(input)}
-                placeholder="Tell me what's on your mind..." style={{ flex: 1, border: 'none', fontSize: 14.5, padding: '10px 0', background: 'transparent', color: '#2D1B33', fontFamily: 'inherit' }} />
-              <button onClick={() => send(input)} disabled={!input.trim() || loading} style={{
-                width: 42, height: 42, borderRadius: 16, border: 'none',
-                background: input.trim() && !loading ? 'linear-gradient(135deg, #6B4F7A, #8B6BAE)' : 'rgba(107,79,122,0.08)',
-                color: input.trim() && !loading ? '#FFF' : '#9B8BA5',
-                cursor: input.trim() && !loading ? 'pointer' : 'default',
-                fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0,
-              }}>↑</button>
+              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send(input)} placeholder="Tell me what's on your mind..." style={{ flex: 1, border: 'none', fontSize: 14.5, padding: '10px 0', background: 'transparent', color: '#2D1B33', fontFamily: 'inherit' }} />
+              <button onClick={() => send(input)} disabled={!input.trim() || loading} style={{ width: 42, height: 42, borderRadius: 16, border: 'none', background: input.trim() && !loading ? 'linear-gradient(135deg, #6B4F7A, #8B6BAE)' : 'rgba(107,79,122,0.08)', color: input.trim() && !loading ? '#FFF' : '#9B8BA5', cursor: input.trim() && !loading ? 'pointer' : 'default', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s', flexShrink: 0 }}>↑</button>
             </div>
             <div style={{ textAlign: 'center', marginTop: 7, fontSize: 10.5, color: '#B5A8BF' }}>AI coach by Elina Allegroni · not a substitute for therapy</div>
           </div>
         </>}
 
-        {/* ANALYZE TAB */}
         {tab === 'analyze' && (
           <div style={{ flex: 1, padding: 20, animation: 'fadeIn 0.4s ease-out' }}>
             <div style={{ textAlign: 'center', paddingTop: 16, marginBottom: 20 }}>
               <div style={{ fontSize: 44, marginBottom: 12 }}>🔍</div>
               <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2D1B33', marginBottom: 6 }}>Situation Analyzer</h3>
-              <p style={{ fontSize: 13.5, color: '#7A6B85', lineHeight: 1.5, maxWidth: 340, margin: '0 auto' }}>
-                Paste a text exchange or describe what happened. I&apos;ll decode the signals using <em>The Allure Code</em> framework.
-              </p>
+              <p style={{ fontSize: 13.5, color: '#7A6B85', lineHeight: 1.5, maxWidth: 340, margin: '0 auto' }}>Paste a text exchange or describe what happened. I&apos;ll decode the signals using <em>The Allure Code</em> framework.</p>
             </div>
             <div style={{ background: '#FFF', borderRadius: 20, padding: 20, border: '1.5px solid rgba(107,79,122,0.08)' }}>
-              <textarea id="analyzeInput" placeholder={'Paste his messages here, or describe the situation...\n\nExample: "He said he\'s not ready for a relationship but still texts me every day and gets jealous when I mention other guys."'} style={{ width: '100%', minHeight: 140, border: 'none', fontSize: 14, lineHeight: 1.6, resize: 'vertical', fontFamily: 'inherit', color: '#2D1B33', background: 'transparent' }} />
-              <button onClick={() => {
-                const v = document.getElementById('analyzeInput')?.value;
-                if (v?.trim()) { setTab('coach'); send('🔍 SITUATION ANALYSIS:\n\n' + v + '\n\nUsing The Allure Code frameworks, please analyze this situation. Identify red flags 🔴, yellow flags 🟡, and green flags 🟢. Reference specific principles where relevant. Then give me your honest advice as Venus.'); }
-              }} style={ctaStyle}>Decode This Situation ♀</button>
+              <textarea id="analyzeInput" placeholder={gender === 'male' ? 'Paste her messages here, or describe the situation...\n\nExample: "She said she had a great time but hasn\'t replied to my follow-up text in 3 days."' : 'Paste his messages here, or describe the situation...\n\nExample: "He said he\'s not ready for a relationship but still texts me every day and gets jealous when I mention other guys."'} style={{ width: '100%', minHeight: 140, border: 'none', fontSize: 14, lineHeight: 1.6, resize: 'vertical', fontFamily: 'inherit', color: '#2D1B33', background: 'transparent' }} />
+              <button onClick={() => { const v = document.getElementById('analyzeInput')?.value; if (v?.trim()) { setTab('coach'); send('\ud83d\udd0d SITUATION ANALYSIS:\n\n' + v + '\n\nUsing The Allure Code frameworks, please analyze this situation. Identify red flags \ud83d\udd34, yellow flags \ud83d\udfe1, and green flags \ud83d\udfe2. Reference specific principles where relevant. Then give me your honest advice as Venus.'); } }} style={ctaStyle}>Decode This Situation ♀</button>
             </div>
           </div>
         )}
 
-        {/* ENERGY ARCHETYPE TAB */}
         {tab === 'energy' && (
           <div style={{ flex: 1, padding: 20, animation: 'fadeIn 0.4s ease-out' }}>
             {!eResult ? (<>
@@ -304,16 +304,10 @@ export default function VenusCoachApp() {
                 <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2D1B33', marginBottom: 4 }}>Your Energy Archetype</h3>
                 <p style={{ fontSize: 13, color: '#9B8BA5' }}>Question {eStep + 1} of {ENERGY_QUIZ.length}</p>
               </div>
-              <div style={{ height: 4, background: 'rgba(107,79,122,0.08)', borderRadius: 4, marginBottom: 20, overflow: 'hidden' }}>
-                <div style={{ height: '100%', background: 'linear-gradient(90deg, #6B4F7A, #8B6BAE)', width: `${(eStep / ENERGY_QUIZ.length) * 100}%`, transition: 'width 0.4s ease', borderRadius: 4 }} />
-              </div>
+              <div style={{ height: 4, background: 'rgba(107,79,122,0.08)', borderRadius: 4, marginBottom: 20, overflow: 'hidden' }}><div style={{ height: '100%', background: 'linear-gradient(90deg, #6B4F7A, #8B6BAE)', width: `${(eStep / ENERGY_QUIZ.length) * 100}%`, transition: 'width 0.4s ease', borderRadius: 4 }} /></div>
               <div style={{ background: '#FFF', borderRadius: 20, padding: 22, border: '1.5px solid rgba(107,79,122,0.08)', boxShadow: '0 4px 20px rgba(107,79,122,0.04)' }}>
                 <p style={{ fontSize: 15.5, fontWeight: 500, color: '#2D1B33', lineHeight: 1.5, marginBottom: 18, textAlign: 'center', fontFamily: "'Cormorant Garamond', serif" }}>{ENERGY_QUIZ[eStep].q}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {ENERGY_QUIZ[eStep].opts.map((o, i) => (
-                    <button key={i} onClick={() => handleEQuiz(o.arch)} style={quizOptStyle}>{o.text}</button>
-                  ))}
-                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{ENERGY_QUIZ[eStep].opts.map((o, i) => (<button key={i} onClick={() => handleEQuiz(o.arch)} style={quizOptStyle}>{o.text}</button>))}</div>
               </div>
             </>) : (
               <div style={{ animation: 'scaleIn 0.5s ease-out', paddingTop: 16 }}>
@@ -343,7 +337,6 @@ export default function VenusCoachApp() {
           </div>
         )}
 
-        {/* ALLURE SCORE TAB */}
         {tab === 'score' && (
           <div style={{ flex: 1, padding: 20, animation: 'fadeIn 0.4s ease-out' }}>
             {aResult === null ? (<>
@@ -352,26 +345,15 @@ export default function VenusCoachApp() {
                 <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 22, color: '#2D1B33', marginBottom: 4 }}>Your Allure Score</h3>
                 <p style={{ fontSize: 13, color: '#9B8BA5' }}>Question {aStep + 1} of {ALLURE_QUIZ.length}</p>
               </div>
-              <div style={{ height: 4, background: 'rgba(107,79,122,0.08)', borderRadius: 4, marginBottom: 20, overflow: 'hidden' }}>
-                <div style={{ height: '100%', background: 'linear-gradient(90deg, #6B4F7A, #8B6BAE)', width: `${(aStep / ALLURE_QUIZ.length) * 100}%`, transition: 'width 0.4s ease', borderRadius: 4 }} />
-              </div>
+              <div style={{ height: 4, background: 'rgba(107,79,122,0.08)', borderRadius: 4, marginBottom: 20, overflow: 'hidden' }}><div style={{ height: '100%', background: 'linear-gradient(90deg, #6B4F7A, #8B6BAE)', width: `${(aStep / ALLURE_QUIZ.length) * 100}%`, transition: 'width 0.4s ease', borderRadius: 4 }} /></div>
               <div style={{ background: '#FFF', borderRadius: 20, padding: 22, border: '1.5px solid rgba(107,79,122,0.08)' }}>
                 <p style={{ fontSize: 15.5, fontWeight: 500, color: '#2D1B33', lineHeight: 1.5, marginBottom: 18, textAlign: 'center', fontFamily: "'Cormorant Garamond', serif" }}>{ALLURE_QUIZ[aStep].q}</p>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                  {ALLURE_QUIZ[aStep].opts.map((o, i) => (
-                    <button key={i} onClick={() => handleAQuiz(o.score)} style={quizOptStyle}>{o.text}</button>
-                  ))}
-                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>{ALLURE_QUIZ[aStep].opts.map((o, i) => (<button key={i} onClick={() => handleAQuiz(o.score)} style={quizOptStyle}>{o.text}</button>))}</div>
               </div>
             </>) : (
               <div style={{ animation: 'scaleIn 0.5s ease-out', textAlign: 'center', paddingTop: 20 }}>
                 {(() => { const r = getScoreResult(aResult); return (<>
-                  <div style={{
-                    width: 150, height: 150, borderRadius: '50%', margin: '0 auto 20px',
-                    background: `conic-gradient(${r.color} ${aResult}%, rgba(107,79,122,0.06) ${aResult}%)`,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: `0 8px 36px ${r.color}25`,
-                  }}>
+                  <div style={{ width: 150, height: 150, borderRadius: '50%', margin: '0 auto 20px', background: `conic-gradient(${r.color} ${aResult}%, rgba(107,79,122,0.06) ${aResult}%)`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 8px 36px ${r.color}25` }}>
                     <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'linear-gradient(170deg, #FDFAFF, #F6EFF9)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                       <div style={{ fontSize: 36, fontWeight: 700, color: '#2D1B33', fontFamily: "'Cormorant Garamond', serif" }}>{aResult}</div>
                       <div style={{ fontSize: 11, color: '#9B8BA5' }}>/ 100</div>
@@ -381,7 +363,7 @@ export default function VenusCoachApp() {
                   <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 28, fontWeight: 600, color: r.color, marginBottom: 8 }}>{r.level}</h2>
                   <p style={{ fontSize: 14, color: '#7A6B85', lineHeight: 1.6, maxWidth: 340, margin: '0 auto 24px' }}>{r.desc}</p>
                   <div style={{ display: 'flex', gap: 8, justifyContent: 'center' }}>
-                    <button onClick={() => { setTab('coach'); send(`My Allure Score is ${aResult}/100 — level: "${r.level}". Using The Allure Code frameworks, give me a personalised action plan to raise my allure. What should I focus on first?`); }} style={{ ...ctaStyle, width: 'auto', padding: '14px 22px' }}>Get My Action Plan ♀</button>
+                    <button onClick={() => { setTab('coach'); send(`My Allure Score is ${aResult}/100 \u2014 level: "${r.level}". Using The Allure Code frameworks, give me a personalised action plan to raise my allure. What should I focus on first?`); }} style={{ ...ctaStyle, width: 'auto', padding: '14px 22px' }}>Get My Action Plan ♀</button>
                     <button onClick={() => { setAStep(0); setAScores([]); setAResult(null); }} style={retakeStyle}>Retake</button>
                   </div>
                 </>); })()}
